@@ -1,0 +1,3 @@
+protocol "Example";
+include "Messages.sm";
+include "Controller.sm";

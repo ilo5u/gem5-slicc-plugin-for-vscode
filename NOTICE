@@ -1,0 +1,16 @@
+SLICC / gem5 Ruby Language Support for VS Code
+
+This implementation was developed by studying the user's local
+SLICC / gem5 Ruby Language Plugin for CLion / IntelliJ IDEA, through version 1.5.0,
+licensed under the Apache License, Version 2.0.
+
+Original repository: https://github.com/ilo5u/gem5-slicc-plugin
+
+The VS Code source model and editor integration are an independent JavaScript
+implementation of that plugin's language rules and editor behavior.
+
+The 16 SLICC file and declaration SVG icons in icons/ are reused from the
+original plugin's src/main/resources/icons/ directory under that license.
+
+gem5 protocol and C++ files used by the optional reference-corpus verification
+retain their original licenses and are not distributed in this extension.

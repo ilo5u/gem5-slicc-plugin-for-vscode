@@ -1,0 +1,54 @@
+{
+  "name": "slicc",
+  "displayName": "SLICC / gem5 Ruby Language Support",
+  "description": "Write gem5 Ruby cache coherence protocols like you write C++: SLICC completion, navigation, diagnostics and inlay hints.",
+  "version": "0.3.0",
+  "publisher": "chengxin",
+  "icon": "icons/logo.png",
+  "license": "Apache-2.0",
+  "engines": { "vscode": "^1.85.0", "node": ">=18" },
+  "categories": ["Programming Languages"],
+  "keywords": ["gem5", "ruby", "slicc", "cache coherence"],
+  "main": "./src/extension.js",
+  "extensionKind": ["workspace"],
+  "activationEvents": ["onLanguage:slicc"],
+  "capabilities": { "untrustedWorkspaces": { "supported": true }, "virtualWorkspaces": { "supported": true } },
+  "scripts": {
+    "check": "node scripts/check.js",
+    "test": "node --test test/core.test.js test/update.test.js test/release150.test.js",
+    "test:corpus": "node scripts/verify-corpus.js",
+    "test:vscode": "node scripts/run-vscode-tests.js",
+    "package": "node scripts/package.js",
+    "vscode:prepublish": "npm run check"
+  },
+  "contributes": {
+    "languages": [{ "id": "slicc", "aliases": ["SLICC", "slicc"], "extensions": [".sm", ".slicc"], "configuration": "./language-configuration.json", "icon": { "light": "./icons/sm.svg", "dark": "./icons/sm_dark.svg" } }],
+    "iconThemes": [{ "id": "slicc", "label": "SLICC (gem5 Ruby)", "path": "./icons/slicc-icon-theme.json" }],
+    "views": { "explorer": [{ "id": "slicc.symbols", "name": "SLICC Symbols", "when": "editorLangId == slicc" }] },
+    "grammars": [{ "language": "slicc", "scopeName": "source.slicc", "path": "./syntaxes/slicc.tmLanguage.json" }],
+    "commands": [
+      { "command": "slicc.reindex", "title": "SLICC: Rebuild Workspace Index" },
+      { "command": "slicc.findRelated", "title": "SLICC: Go to Related Transitions / Calls / Usages" }
+    ],
+    "menus": { "editor/context": [{ "command": "slicc.findRelated", "when": "editorLangId == slicc", "group": "navigation@5" }] },
+    "configuration": {
+      "title": "SLICC",
+      "properties": {
+        "slicc.diagnostics.enabled": { "type": "boolean", "default": true, "description": "Report SLICC syntax and unresolved symbols." },
+        "slicc.diagnostics.members": { "type": "boolean", "default": true, "description": "Check member names when the receiver and its interface hierarchy are known." },
+        "slicc.diagnostics.functionResults": { "type": "boolean", "default": true, "description": "Check definite type mismatches involving function results." },
+        "slicc.diagnostics.externalTypes": { "type": "boolean", "default": true, "description": "Check external types against reachable gem5 C++ sources." },
+        "slicc.diagnostics.printf": { "type": "boolean", "default": true, "description": "Check DPRINTF debug flags and literal DPRINTF/DPRINTFN format argument counts." },
+        "slicc.diagnostics.transitions": { "type": "boolean", "default": true, "description": "Check transition action names and duplicate state/event pairs in include expansion order." },
+        "slicc.diagnostics.calls": { "type": "boolean", "default": true, "description": "Report definitely missing visible free or supported scoped function names." },
+        "slicc.inlayHints.parameterNames": { "type": "boolean", "default": true, "description": "Show parameter names at resolved calls." },
+        "slicc.inlayHints.implicitTypes": { "type": "boolean", "default": true, "description": "Show the type at the first use of an implicit message or action variable." },
+        "slicc.navigation.maxStatementLength": { "type": "integer", "default": 160, "minimum": 1, "description": "Maximum Unicode characters in related usage previews." },
+        "slicc.index.exclude": { "type": "string", "default": "**/{.git,node_modules,build,dist,.venv}/**", "description": "Glob excluded from workspace SLICC discovery." },
+        "slicc.index.includePaths": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Additional include directories, absolute or relative to each workspace folder." }
+      }
+    },
+    "configurationDefaults": { "[slicc]": { "editor.semanticHighlighting.enabled": true, "editor.inlayHints.enabled": "on" } },
+    "semanticTokenScopes": [{ "language": "slicc", "scopes": { "class": ["entity.name.type.slicc"], "struct": ["entity.name.type.slicc"], "enum": ["entity.name.type.enum.slicc"], "enumMember": ["constant.other.enum.slicc"], "function": ["entity.name.function.slicc"], "method": ["entity.name.function.slicc"], "property": ["variable.other.member.slicc"], "variable.defaultLibrary": ["variable.language.slicc"] } }]
+  }
+}

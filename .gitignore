@@ -1,0 +1,49 @@
+# Dependencies and build outputs
+node_modules/
+dist/
+build/
+out/
+*.vsix
+
+# Local test installations, reports and caches
+.test/
+.cache/
+.vscode-test/
+.vscode-test-web/
+coverage/
+.nyc_output/
+
+# Logs, crash dumps and temporary files
+*.log
+*.log.*
+*.dmp
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Local settings and credentials; retain shareable examples and F5 launch config
+.env
+.env.*
+!.env.example
+!.env.sample
+.npmrc
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+*.code-workspace
+.idea/
+.vs/
+.history/
+.codex/
+.claude/
+.agents/
+.aws/
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

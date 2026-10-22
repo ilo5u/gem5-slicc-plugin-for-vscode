@@ -1,0 +1,19 @@
+// Small, self-contained editor example. This is not a runnable gem5 protocol.
+external_type(Addr, external_name="uint64_t");
+
+enumeration(MachineType) {
+    Cache, desc="Example cache controller";
+}
+
+structure(RequestMsg, desc="A request from another controller") {
+    Addr LineAddress;
+    int Value;
+}
+
+structure(ResponseMsg) {
+    int Value;
+}
+
+structure(MessageBuffer) {}
+
+structure(AbstractCacheEntry) {}

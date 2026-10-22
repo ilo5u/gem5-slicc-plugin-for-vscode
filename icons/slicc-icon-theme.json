@@ -1,0 +1,17 @@
+{
+  "iconDefinitions": {
+    "sm": { "iconPath": "./sm_dark.svg" },
+    "slicc": { "iconPath": "./slicc_dark.svg" },
+    "smLight": { "iconPath": "./sm.svg" },
+    "sliccLight": { "iconPath": "./slicc.svg" },
+    "file": { "iconPath": "./file-dark.svg" },
+    "folder": { "iconPath": "./folder-dark.svg" },
+    "fileLight": { "iconPath": "./file-light.svg" },
+    "folderLight": { "iconPath": "./folder-light.svg" }
+  },
+  "file": "file",
+  "folder": "folder",
+  "fileExtensions": { "sm": "sm", "slicc": "slicc" },
+  "light": { "file": "fileLight", "folder": "folderLight", "fileExtensions": { "sm": "smLight", "slicc": "sliccLight" } },
+  "highContrast": { "fileExtensions": { "sm": "sm", "slicc": "slicc" } }
+}

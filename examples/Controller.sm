@@ -1,0 +1,42 @@
+machine(MachineType:Cache, "Editor example") :
+    MessageBuffer * requests;
+    MessageBuffer * responses;
+{
+    state_declaration(State) {
+        Invalid, desc="No cached value";
+        Valid, desc="A value is available";
+    }
+
+    enumeration(Event) {
+        Load;
+    }
+
+    structure(Entry, interface="AbstractCacheEntry", desc="The primary cache entry") {
+        int Value;
+    }
+
+    structure(TBE) {
+        int Pending;
+    }
+
+    void writeValue(Entry &entry, int value) {
+        entry.Value := value;
+    }
+
+    int nextValue(int value) {
+        return value + 1;
+    }
+
+    action(a_update, "u", desc="Update the cache and send a response") {
+        peek(requests, RequestMsg) {
+            writeValue(cache_entry, nextValue(in_msg.Value));
+            enqueue(responses, ResponseMsg) {
+                out_msg.Value := cache_entry.Value;
+            }
+        }
+    }
+
+    transition(Invalid, Load, Valid) {
+        a_update;
+    }
+}

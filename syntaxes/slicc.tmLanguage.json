@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "SLICC",
+  "scopeName": "source.slicc",
+  "patterns": [
+    { "include": "#comments" }, { "include": "#strings" },
+    { "name": "keyword.control.slicc", "match": "\\b(if|else|return)\\b" },
+    { "name": "storage.type.slicc", "match": "\\b(machine|structure|global|enumeration|external_type|state_declaration|in_port|out_port|action|transition|include|protocol)\\b" },
+    { "name": "support.function.builtin.slicc", "match": "\\b(peek|enqueue|trigger|stall_and_wait|wakeup_port|check_allocate|check_next_cycle|check_stop_slots|check_on_cache_probe|OOD|defer_enqueueing|static_cast|new|DPRINTF|DPRINTFN|APPEND_TRANSITION_COMMENT|stallPort|is_valid|is_invalid)\\b" },
+    { "name": "storage.type.primitive.slicc", "match": "\\b(void|bool|int|float|double|string)\\b" },
+    { "name": "entity.other.attribute-name.slicc", "match": "\\b(desc|main|in_trans|out_trans|default|network|virtual_network|vnet_type|rank|return_by_pointer|return_by_ref|interface|external|primitive|ordered|template|constructor|non_obj|implicit_ctor|buffer|inport|outport|external_name|block_on|format|wake_up|rsc_stall_handler|prot_stall_handler)\\b(?=\\s*=)" },
+    { "name": "constant.language.slicc", "match": "\\b(true|false|null|NULL)\\b" },
+    { "name": "constant.numeric.slicc", "match": "\\b(0[xX][0-9a-fA-F]+|[0-9]+(\\.[0-9]*)?([eE][+-]?[0-9]+)?)[uUlLfF]*\\b" },
+    { "name": "entity.name.function.slicc", "match": "\\b[A-Za-z_][A-Za-z_0-9]*(?=\\s*\\()" },
+    { "name": "keyword.operator.slicc", "match": ":=|::|==|!=|<=|>=|&&|\\|\\||[-+*/%<>=!&|^~]" },
+    { "name": "punctuation.section.slicc", "match": "[{}()\\[\\]]" }
+  ],
+  "repository": {
+    "comments": { "patterns": [
+      { "name": "comment.line.double-slash.slicc", "begin": "//", "end": "$" },
+      { "name": "comment.block.slicc", "begin": "/\\*", "end": "\\*/" }
+    ] },
+    "strings": { "patterns": [
+      { "name": "string.quoted.double.slicc", "begin": "\"", "end": "\"", "patterns": [{ "name": "constant.character.escape.slicc", "match": "\\\\." }] },
+      { "name": "string.quoted.single.slicc", "begin": "'", "end": "'", "patterns": [{ "name": "constant.character.escape.slicc", "match": "\\\\." }] }
+    ] }
+  }
+}

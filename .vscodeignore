@@ -1,0 +1,47 @@
+# Repository and development files
+.git/**
+.github/**
+.gitignore
+.vscodeignore
+test/**
+scripts/**
+.vscode/**
+
+# Dependencies, build outputs, test installations and caches
+**/node_modules/**
+**/dist/**
+**/build/**
+**/out/**
+**/.test/**
+**/.cache/**
+**/.vscode-test/**
+**/.vscode-test-web/**
+**/coverage/**
+**/.nyc_output/**
+
+# Local configuration and credentials
+**/.env*
+**/.npmrc
+**/*.code-workspace
+**/.idea/**
+**/.vs/**
+**/.history/**
+**/.codex/**
+**/.claude/**
+**/.agents/**
+**/.aws/**
+
+# Packages, logs, temporary files and operating-system metadata
+**/*.vsix
+**/*.log
+**/*.log.*
+**/*.dmp
+**/*.tmp
+**/*.temp
+**/*.bak
+**/*.swp
+**/*.swo
+**/*~
+**/.DS_Store
+**/Thumbs.db
+**/Desktop.ini
