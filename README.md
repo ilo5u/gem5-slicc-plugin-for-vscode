@@ -4,14 +4,16 @@ English | [简体中文](README.zh-CN.md)
 
 **Write gem5 Ruby cache coherence protocols like you write C++.**
 
-Language support for the **SLICC language** used by gem5 Ruby cache-coherence protocols, covering `.sm` and `.slicc` files. Version **0.3.0** aligns with the CLion plugin **1.5.0** feature set in an independent JavaScript implementation. It requires no Java, Python, gem5 build, or npm dependencies.
+Language support for the **SLICC language** used by gem5 Ruby cache-coherence protocols, covering `.sm` and `.slicc` files. Version **0.3.1** aligns with the CLion plugin **1.5.0** feature set in an independent JavaScript implementation. It requires no Java, Python, gem5 build, or npm dependencies.
+
+VS Code extension repository: [ilo5u/gem5-slicc-plugin-for-vscode](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode). Report bugs and request features through [GitHub Issues](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/issues).
 
 Original CLion / IntelliJ IDEA plugin repository: [ilo5u/gem5-slicc-plugin](https://github.com/ilo5u/gem5-slicc-plugin).
 
 ## Installation and Usage
 
 1. Download the `.vsix` installation file from [GitHub Releases](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/releases).
-2. In the VS Code Extensions view, open the `…` menu and choose **Install from VSIX…**, then select the downloaded file. Alternatively, run `code --install-extension slicc-0.3.0.vsix` from the download directory.
+2. In the VS Code Extensions view, open the `…` menu and choose **Install from VSIX…**, then select the downloaded file. Alternatively, run `code --install-extension slicc-0.3.1.vsix` from the download directory.
 3. Open the full gem5 repository, then open a protocol file under `src/mem/ruby/protocol`. The language mode in the status bar should be **SLICC**.
 
 The bundled `examples/Example.slicc` is a self-contained example for exploring editor features; it is not a runnable gem5 protocol. Press **F5** in this project to launch an Extension Development Host.

@@ -4,14 +4,16 @@
 
 **像编写 C++ 一样编写 gem5 Ruby 缓存一致性协议。**
 
-为 gem5 Ruby 缓存一致性协议的 **SLICC 语言**提供 VS Code 编辑支持，识别 `.sm` 和 `.slicc`。当前版本 **0.3.0** 对齐 CLion 插件 **1.5.0** 的功能，以 JavaScript 独立实现，无需 Java、Python、gem5 构建或 npm 依赖。
+为 gem5 Ruby 缓存一致性协议的 **SLICC 语言**提供 VS Code 编辑支持，识别 `.sm` 和 `.slicc`。当前版本 **0.3.1** 对齐 CLion 插件 **1.5.0** 的功能，以 JavaScript 独立实现，无需 Java、Python、gem5 构建或 npm 依赖。
+
+VS Code 插件仓库：[ilo5u/gem5-slicc-plugin-for-vscode](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode)。反馈问题和提出功能建议请使用 [GitHub Issues](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/issues)。
 
 原版 CLion / IntelliJ IDEA 插件仓库：[ilo5u/gem5-slicc-plugin](https://github.com/ilo5u/gem5-slicc-plugin)。
 
 ## 安装与使用
 
 1. 从 [GitHub Releases](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/releases) 下载 `.vsix` 安装包。
-2. 在 VS Code 扩展面板的 `…` 菜单中选择 **Install from VSIX… / 从 VSIX 安装…**，选中下载的文件。也可在下载目录运行 `code --install-extension slicc-0.3.0.vsix`。
+2. 在 VS Code 扩展面板的 `…` 菜单中选择 **Install from VSIX… / 从 VSIX 安装…**，选中下载的文件。也可在下载目录运行 `code --install-extension slicc-0.3.1.vsix`。
 3. 打开完整 gem5 仓库，然后打开 `src/mem/ruby/protocol` 下的协议文件。状态栏语言模式应为 **SLICC**。
 
 仓库内的 `examples/Example.slicc` 是一个自包含的编辑功能示例；它不是可运行的 gem5 协议。在当前工程按 **F5** 可启动扩展开发宿主。

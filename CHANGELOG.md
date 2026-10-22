@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 — 2026-10-22
+
+- Add the VS Code extension's GitHub repository and issue tracker to the English and Chinese README files.
+- Set explicit homepage and issue-tracker metadata alongside the repository so VS Code and the Marketplace can display these resource links.
+- Include the same resource links in the offline VSIX manifest.
+
 ## 0.3.0 — 2026-10-22
 
 - Align with JetBrains plugin 1.5.0, tag `v1.5.0`, commit `e54aa1b2986c6975cb87469c27d0bd2e6126c998`.
