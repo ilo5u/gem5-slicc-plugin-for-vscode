@@ -10,8 +10,8 @@ Original CLion / IntelliJ IDEA plugin repository: [ilo5u/gem5-slicc-plugin](http
 
 ## Installation and Usage
 
-1. Run `npm run package` in this directory to generate `dist/slicc-0.3.0.vsix`.
-2. In the VS Code Extensions view, open the `…` menu and choose **Install from VSIX…**, then select the file. Alternatively, run `code --install-extension dist/slicc-0.3.0.vsix`.
+1. Download the `.vsix` installation file from [GitHub Releases](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/releases).
+2. In the VS Code Extensions view, open the `…` menu and choose **Install from VSIX…**, then select the downloaded file. Alternatively, run `code --install-extension slicc-0.3.0.vsix` from the download directory.
 3. Open the full gem5 repository, then open a protocol file under `src/mem/ruby/protocol`. The language mode in the status bar should be **SLICC**.
 
 The bundled `examples/Example.slicc` is a self-contained example for exploring editor features; it is not a runnable gem5 protocol. Press **F5** in this project to launch an Extension Development Host.
@@ -91,7 +91,6 @@ Requires Node.js 18 or later. There is no need to run `npm install`.
 npm run check
 npm test
 npm run test:corpus -- "<path-to-reference-repository>"
-npm run package
 npm run test:vscode
 ```
 
@@ -99,7 +98,7 @@ npm run test:vscode
 
 `test:vscode` uses a locally installed VS Code. It installs the newly generated VSIX into isolated user-data and extension directories under `.test/vscode/`, then verifies features in a real Extension Host. Set `VSCODE_EXECUTABLE` to override the executable path. Results are written to `.test/vscode-report.json`. Ordinary unit tests do not launch VS Code.
 
-See [docs/architecture.md](docs/architecture.md) for the architecture and feature mapping. The local VSIX can be installed directly. Before publishing to the Marketplace, set `publisher` in `package.json` to a publisher ID you own and follow the official [vsce publishing workflow](https://code.visualstudio.com/api/working-with-extensions/publishing-extension).
+See [docs/architecture.md](docs/architecture.md) for the architecture and feature mapping.
 
 Keep this file and [README.zh-CN.md](README.zh-CN.md) synchronized when changing installation steps, features, settings, verification commands, or analysis limits.
 
@@ -110,6 +109,10 @@ As with the original plugin, rename refactoring, full code formatting, C++ membe
 Debug format checks validate counts, not argument types; dynamic or unsupported formats and incomplete calls defer those checks. Missing-function diagnostics check names, not argument compatibility. Transition diagnostics require an unambiguous, complete machine/include expansion and apply state/event-set overlaps only to later transitions. A malformed file retains its primary syntax errors while semantic cascades are deferred.
 
 The C++ dependency graph statically combines conditional branches without executing Kconfig, SCons, a preprocessor, or a compiler. Computed paths, macro-generated definitions, and complex aliases may not resolve. The extension supports desktop VS Code and workspace extension hosts in Remote SSH / WSL; it is not a browser Web extension.
+
+## Acknowledgments
+
+This VS Code extension was developed with assistance from **OpenAI Codex (GPT-6)**, covering repository analysis, feature porting, implementation, testing, documentation, and release preparation. Thank you to OpenAI and Codex for their support throughout this work.
 
 ## License
 

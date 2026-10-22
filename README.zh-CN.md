@@ -10,8 +10,8 @@
 
 ## 安装与使用
 
-1. 在此目录运行 `npm run package`，生成 `dist/slicc-0.3.0.vsix`。
-2. 在 VS Code 扩展面板的 `…` 菜单中选择 **Install from VSIX… / 从 VSIX 安装…**，选中该文件。也可运行 `code --install-extension dist/slicc-0.3.0.vsix`。
+1. 从 [GitHub Releases](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/releases) 下载 `.vsix` 安装包。
+2. 在 VS Code 扩展面板的 `…` 菜单中选择 **Install from VSIX… / 从 VSIX 安装…**，选中下载的文件。也可在下载目录运行 `code --install-extension slicc-0.3.0.vsix`。
 3. 打开完整 gem5 仓库，然后打开 `src/mem/ruby/protocol` 下的协议文件。状态栏语言模式应为 **SLICC**。
 
 仓库内的 `examples/Example.slicc` 是一个自包含的编辑功能示例；它不是可运行的 gem5 协议。在当前工程按 **F5** 可启动扩展开发宿主。
@@ -91,7 +91,6 @@ machine 所属的未限定外部类型优先查找唯一的 `gem5::ruby::<protoc
 npm run check
 npm test
 npm run test:corpus -- "<path-to-reference-repository>"
-npm run package
 npm run test:vscode
 ```
 
@@ -99,7 +98,7 @@ npm run test:vscode
 
 `test:vscode` 使用本机已安装的 VS Code，在 `.test/vscode/` 的独立用户目录与扩展目录中安装刚生成的 VSIX，再验证真实扩展宿主中的功能。可通过环境变量 `VSCODE_EXECUTABLE` 指定可执行文件；结果写入 `.test/vscode-report.json`。普通单元测试不启动 VS Code。
 
-架构与功能对应关系见 [docs/architecture.md](docs/architecture.md)。本地 VSIX 可直接安装；发布到 Marketplace 前请把 `package.json` 的 `publisher` 改为你实际拥有的发布者 ID，并用官方 [vsce 发布流程](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)发布。
+架构与功能对应关系见 [docs/architecture.md](docs/architecture.md)。
 
 修改安装步骤、功能、配置、验证命令或分析边界时，请同步更新本文件与英文版 [README.md](README.md)。
 
@@ -110,6 +109,10 @@ npm run test:vscode
 调试格式检查只校验参数数量，不校验参数类型；动态或不支持的格式及不完整调用会推迟检查。缺失函数诊断只检查名称，不检查实参兼容性。Transition 诊断需要无歧义且完整的 machine/include 展开上下文，集合重叠只在后出现的 transition 上报告。语法有误的文件保留主要语法错误，暂缓后续语义级联错误。
 
 C++ 依赖图静态合并条件分支，不执行 Kconfig、SCons、预处理器或编译器。计算路径、宏生成的定义与复杂别名可能无法解析。扩展支持桌面 VS Code、Remote SSH / WSL 的工作区扩展宿主；不是浏览器 Web 扩展。
+
+## 致谢
+
+本 VS Code 插件的仓库分析、功能移植、代码实现、测试验证、文档编写及发布准备工作由 **OpenAI Codex（GPT-6）** 辅助完成。感谢 OpenAI 与 Codex 在上述工作中提供的帮助与支持。
 
 ## 许可
 

@@ -6,6 +6,7 @@
   "publisher": "chengxin",
   "icon": "icons/logo.png",
   "license": "Apache-2.0",
+  "repository": { "type": "git", "url": "https://github.com/ilo5u/gem5-slicc-plugin-for-vscode.git" },
   "engines": { "vscode": "^1.85.0", "node": ">=18" },
   "categories": ["Programming Languages"],
   "keywords": ["gem5", "ruby", "slicc", "cache coherence"],

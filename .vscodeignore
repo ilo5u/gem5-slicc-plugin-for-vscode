@@ -10,6 +10,7 @@ scripts/**
 # Dependencies, build outputs, test installations and caches
 **/node_modules/**
 **/dist/**
+**/packages/**
 **/build/**
 **/out/**
 **/.test/**
