@@ -1,0 +1,5 @@
+{
+  "name": "SLICC Include List",
+  "scopeName": "source.slicc.list",
+  "patterns": [{ "include": "source.slicc" }]
+}

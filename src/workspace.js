@@ -4,6 +4,7 @@ const vscode = require('vscode');
 const { WorkspaceIndex, relativeUri, directory, isWithin } = require('./core/index');
 const { ExternalTypes } = require('./core/build-scope');
 const { DebugFlags } = require('./core/debug-flags');
+const { isSliccDocument } = require('./languages');
 
 class Workspace {
   constructor(context) {
@@ -27,7 +28,7 @@ class Workspace {
       vscode.workspace.onDidChangeTextDocument(event => this.update(event.document)),
       vscode.workspace.onDidCloseTextDocument(doc => {
         this.documents.delete(doc.uri.toString());
-        if (doc.languageId === 'slicc') void this.reload(doc.uri);
+        if (isSliccDocument(doc)) void this.reload(doc.uri);
         else if (/\.(?:h|hh|hpp|hxx|c|cc|cpp|cxx)$|\/(?:Kconfig|SConscript|SConsopts)$/.test(doc.uri.path)) this.externalChanged();
       }),
       vscode.workspace.onDidChangeWorkspaceFolders(() => { this.ready = this.reindex(); }),
@@ -73,14 +74,14 @@ class Workspace {
     try { return new TextDecoder('utf-8').decode(await vscode.workspace.fs.readFile(vscode.Uri.parse(uri))); } catch { return undefined; }
   }
   open(doc, notify = true) {
-    if (doc.languageId !== 'slicc') return;
+    if (!isSliccDocument(doc)) return;
     this.documents.set(doc.uri.toString(), doc);
     this.index.set(doc.uri.toString(), doc.getText());
     this.external.protocols.invalidate();
     if (notify) this.debounce('open', () => { void Promise.all([this.loadIncludes(), this.loadGlobals(doc.uri.toString())]).then(() => this.change.fire()).catch(e => this.log(e)); });
   }
   update(doc) {
-    if (doc.languageId === 'slicc') { this.open(doc, false); this.debounce('edit', () => { void this.loadIncludes().then(() => this.change.fire()).catch(e => this.log(e)); }); }
+    if (isSliccDocument(doc)) { this.open(doc, false); this.debounce('edit', () => { void this.loadIncludes().then(() => this.change.fire()).catch(e => this.log(e)); }); }
     else if (/\.(?:h|hh|hpp|hxx|c|cc|cpp|cxx)$|\/(?:Kconfig|SConscript|SConsopts)$/.test(doc.uri.path)) this.externalChanged();
   }
   async reload(uri) {

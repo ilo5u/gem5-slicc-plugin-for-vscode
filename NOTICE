@@ -1,7 +1,9 @@
 SLICC / gem5 Ruby Language Support for VS Code
 
+Author: chengxin
+
 This implementation was developed by studying the user's local
-SLICC / gem5 Ruby Language Plugin for CLion / IntelliJ IDEA, through version 1.5.0,
+SLICC / gem5 Ruby Language Plugin for CLion / IntelliJ IDEA, through version 1.6.0,
 licensed under the Apache License, Version 2.0.
 
 Original repository: https://github.com/ilo5u/gem5-slicc-plugin

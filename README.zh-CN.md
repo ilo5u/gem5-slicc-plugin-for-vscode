@@ -4,17 +4,19 @@
 
 **像编写 C++ 一样编写 gem5 Ruby 缓存一致性协议。**
 
-为 gem5 Ruby 缓存一致性协议的 **SLICC 语言**提供 VS Code 编辑支持，识别 `.sm` 和 `.slicc`。当前版本 **0.3.1** 对齐 CLion 插件 **1.5.0** 的功能，以 JavaScript 独立实现，无需 Java、Python、gem5 构建或 npm 依赖。
+为 gem5 Ruby 缓存一致性协议的 **SLICC 语言**提供 VS Code 编辑支持，识别 `.sm` 和 `.slicc`。当前版本 **0.4.0** 对齐 CLion 插件 **1.6.0** 的功能，以 JavaScript 独立实现，无需 Java、Python、gem5 构建或 npm 依赖。
 
 VS Code 插件仓库：[ilo5u/gem5-slicc-plugin-for-vscode](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode)。反馈问题和提出功能建议请使用 [GitHub Issues](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/issues)。
 
 原版 CLion / IntelliJ IDEA 插件仓库：[ilo5u/gem5-slicc-plugin](https://github.com/ilo5u/gem5-slicc-plugin)。
 
+作者：**chengxin**。
+
 ## 安装与使用
 
 1. 从 [GitHub Releases](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/releases) 下载 `.vsix` 安装包。
-2. 在 VS Code 扩展面板的 `…` 菜单中选择 **Install from VSIX… / 从 VSIX 安装…**，选中下载的文件。也可在下载目录运行 `code --install-extension slicc-0.3.1.vsix`。
-3. 打开完整 gem5 仓库，然后打开 `src/mem/ruby/protocol` 下的协议文件。状态栏语言模式应为 **SLICC**。
+2. 在 VS Code 扩展面板的 `…` 菜单中选择 **Install from VSIX… / 从 VSIX 安装…**，选中下载的文件。也可在下载目录运行 `code --install-extension slicc-0.4.0.vsix`。
+3. 打开完整 gem5 仓库，然后打开 `src/mem/ruby/protocol` 下的协议文件。`.sm` 的状态栏语言模式应为 **SLICC**，`.slicc` 为 **SLICC Include List**。
 
 仓库内的 `examples/Example.slicc` 是一个自包含的编辑功能示例；它不是可运行的 gem5 协议。在当前工程按 **F5** 可启动扩展开发宿主。
 
@@ -26,7 +28,7 @@ VS Code 插件仓库：[ilo5u/gem5-slicc-plugin-for-vscode](https://github.com/i
 | 上下文补全 | `Ctrl+Space`；`.` 后只显示接收者的成员，支持 `interface` 继承、消息类型与引用/指针参数 |
 | 协议索引 | 跟随 `.slicc` / `include` 和 `RubySlicc_interfaces.slicc`；区分 machine、类型和词法作用域 |
 | 定义导航 | `F12` / `Ctrl+Click`；支持局部变量遮蔽、函数重载与跨文件声明/实现 |
-| 双向导航 | 在 action 声明上跳到 transition；在函数实现或只有声明的函数上查看调用语句；在字段/枚举常量声明上查看使用语句 |
+| 双向导航 | 在 action 声明上跳到 transition；在函数实现或只有声明的函数上查看调用语句；在 machine/structure 成员和枚举常量声明上查看实际使用语句 |
 | 相关位置 | 命令面板或右键 **SLICC: Go to Related Transitions / Calls / Usages**，显示完整语句的单行预览并跳到标识符 |
 | 查找引用 | `Shift+F12`，按符号身份和重载匹配，合并函数原型与实现的引用 |
 | 参数与悬浮信息 | `Ctrl+Shift+Space` 或输入 `(` / `,`，保留 `&` / `*`，显示当前参数与重载 |
@@ -46,6 +48,8 @@ VS Code 插件仓库：[ilo5u/gem5-slicc-plugin-for-vscode](https://github.com/i
 
 VS Code 的 **Go to Declaration** 始终提供语义声明位置。**Go to Definition** 在声明名称处提供上述双向导航，这与原插件的交互方式一致。
 
+在 CHI 的 `directory` 等 machine 成员声明上执行 **Go to Definition / 转到定义**，可查看该 machine 的函数、action 及传递 include 中的使用语句。同一语句只显示一次，保留全部结果。参数、局部变量、其他接收者类型和其他 machine 各自保留声明身份；共享 include 的 machine 归属有歧义时，暂缓成员查询。**Go to Declaration / 转到声明** 和 **Find References / 查找引用** 仍按语义声明处理。
+
 `peek` 中的 `in_msg` 与 `enqueue` 中的 `out_msg` 使用最近匹配块的第二个参数作为类型，嵌套块继承外围绑定，显式参数/局部变量优先。共享文件可被多个 machine 引用；查找使用会遍历所有调用上下文。
 
 action 内的 `cache_entry` 使用当前 machine/include 作用域中唯一的主 `AbstractCacheEntry` 实现。省略 `main` 时默认视为 true，`main="false"` 会排除该结构。导航、补全、重载推断和内联提示使用同一结果；显式局部变量和参数仍优先，默认类型缺失或含歧义时不会退回到无关的 `Entry`。
@@ -56,11 +60,13 @@ action 内的 `cache_entry` 使用当前 machine/include 作用域中唯一的�
 
 Transition 的 state、event 和 action 列表支持空白、逗号或分号分隔，也允许末尾分隔符。第三个参数可以是 `*`。单个花括号块属于 action 列表，包括空块或没有分号的列表；有两个块时，第一个为资源块。action 缺少右花括号时会保留语法错误，同时恢复后续声明的大纲与导航。
 
-资源管理器中的 **SLICC Symbols** 视图使用原版明暗主题声明徽标展示当前文件。要启用蓝色 `SM` 与紫色 `H` 的独立文件图标，可运行 **Preferences: File Icon Theme / 首选项：文件图标主题** 并选择 **SLICC (gem5 Ruby)**。这个可选主题为其他文件和文件夹使用通用图标。原生大纲和补全列表保留 VS Code 标准符号图标；当前文件图标主题可能覆盖默认的语言图标。
+默认文件图标已区分 `.sm` 的蓝色 `SM` 与 `.slicc` 的紫色 `H`，并提供明暗主题版本。当前文件图标主题可能覆盖这些默认值；如需明确使用插件内置图标，可运行 **Preferences: File Icon Theme / 首选项：文件图标主题** 并选择 **SLICC (gem5 Ruby)**，这个可选主题为其他文件和文件夹使用通用图标。资源管理器中的 **SLICC Symbols** 视图使用原版明暗声明徽标；原生大纲和补全列表保留 VS Code 标准符号图标。
 
 ## 配置
 
 在设置中搜索 `SLICC`。常用设置：
+
+两种文件共用下列 `slicc.*` 设置。按语言覆盖编辑器配置时，`.sm` 使用 `[slicc]`，`.slicc` 使用 `[slicc-list]`。
 
 ```json
 {
@@ -96,7 +102,7 @@ npm run test:corpus -- "<path-to-reference-repository>"
 npm run test:vscode
 ```
 
-`test:corpus` 读取指定仓库 HEAD 中的 Ruby 源码快照，检查真实协议解析、include、导航、内联提示、C++ 外部类型映射、调试标志，以及 MI_example、CHI 和 MOESI_hammer 的实际主缓存项。命令末尾可追加 Git 引用来固定发布快照，例如原插件仓库的 `v1.5.0`。还检查错误 action 块的恢复、全部 9 个端口方法、枚举默认值、CHI 的 `MN_TBEStorage` 命名空间，以及通过内存编辑验证 CHI 的 226 个 transition 的重复检测；详细结果写入 `.test/corpus-report.json`。支持原插件仓库的 `ruby/` 或 gem5 的 `src/mem/ruby/`，不改动源仓库。仅有 Ruby 子树的快照提供部分调试标志补全；非 Ruby 声明需要完整项目。
+`test:corpus` 读取指定仓库 HEAD 中的 Ruby 源码快照，检查真实协议解析、include、导航、内联提示、C++ 外部类型映射、调试标志，以及 MI_example、CHI 和 MOESI_hammer 的实际主缓存项。命令末尾可追加 Git 引用来固定发布快照，例如原插件仓库的 `v1.6.0`。还检查错误 action 块的恢复、全部 9 个端口方法、枚举默认值、CHI 的 `MN_TBEStorage` 命名空间、`directory` 的全部 8 条用法，以及通过内存编辑验证 CHI 的 226 个 transition 的重复检测；详细结果写入 `.test/corpus-report.json`。支持原插件仓库的 `ruby/` 或 gem5 的 `src/mem/ruby/`，不改动源仓库。仅有 Ruby 子树的快照提供部分调试标志补全；非 Ruby 声明需要完整项目。
 
 `test:vscode` 使用本机已安装的 VS Code，在 `.test/vscode/` 的独立用户目录与扩展目录中安装刚生成的 VSIX，再验证真实扩展宿主中的功能。可通过环境变量 `VSCODE_EXECUTABLE` 指定可执行文件；结果写入 `.test/vscode-report.json`。普通单元测试不启动 VS Code。
 

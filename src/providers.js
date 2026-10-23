@@ -9,7 +9,7 @@ const { hints } = require('./core/hints');
 const { diagnostics } = require('./core/diagnostics');
 const { externalNames } = require('./core/cpp');
 const { debugFlagPosition } = require('./core/printf');
-const selector = { language: 'slicc' };
+const { selector, isSliccDocument } = require('./languages');
 const tokenTypes = ['class', 'struct', 'enum', 'enumMember', 'function', 'method', 'parameter', 'property', 'variable', 'type'];
 const tokenModifiers = ['declaration', 'readonly', 'defaultLibrary'];
 const legend = new vscode.SemanticTokensLegend(tokenTypes, tokenModifiers);
@@ -316,7 +316,7 @@ class Providers {
       .map(h => { const item = new vscode.InlayHint(document.positionAt(h.offset), h.label, h.kind === 'type' ? vscode.InlayHintKind.Type : vscode.InlayHintKind.Parameter); item.paddingLeft = h.kind === 'type'; item.paddingRight = h.kind === 'parameter'; return item; });
   }
   scheduleDiagnostics() {
-    for (const doc of vscode.workspace.textDocuments) if (doc.languageId === 'slicc') {
+    for (const doc of vscode.workspace.textDocuments) if (isSliccDocument(doc)) {
       const key = doc.uri.toString(); clearTimeout(this.diagnosticTimers.get(key));
       this.diagnosticJobs.get(key)?.cancel(); this.diagnosticJobs.get(key)?.dispose();
       const job = new vscode.CancellationTokenSource(); this.diagnosticJobs.set(key, job);
@@ -343,7 +343,7 @@ class Providers {
     }));
   }
   async findRelated() {
-    const editor = vscode.window.activeTextEditor; if (!editor || editor.document.languageId !== 'slicc') return;
+    const editor = vscode.window.activeTextEditor; if (!isSliccDocument(editor?.document)) return;
     const a = await this.session(editor.document), i = tokenIndexAt(a.source, editor.document.offsetAt(editor.selection.active)), symbols = a.resolve(i);
     const refs = symbols.flatMap(s => a.related(s)), seen = new Set(), items = [];
     const limit = Math.max(1, vscode.workspace.getConfiguration('slicc').get('navigation.maxStatementLength', 160));

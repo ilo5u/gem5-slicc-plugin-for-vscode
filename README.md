@@ -4,17 +4,19 @@ English | [简体中文](README.zh-CN.md)
 
 **Write gem5 Ruby cache coherence protocols like you write C++.**
 
-Language support for the **SLICC language** used by gem5 Ruby cache-coherence protocols, covering `.sm` and `.slicc` files. Version **0.3.1** aligns with the CLion plugin **1.5.0** feature set in an independent JavaScript implementation. It requires no Java, Python, gem5 build, or npm dependencies.
+Language support for the **SLICC language** used by gem5 Ruby cache-coherence protocols, covering `.sm` and `.slicc` files. Version **0.4.0** aligns with the CLion plugin **1.6.0** feature set in an independent JavaScript implementation. It requires no Java, Python, gem5 build, or npm dependencies.
 
 VS Code extension repository: [ilo5u/gem5-slicc-plugin-for-vscode](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode). Report bugs and request features through [GitHub Issues](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/issues).
 
 Original CLion / IntelliJ IDEA plugin repository: [ilo5u/gem5-slicc-plugin](https://github.com/ilo5u/gem5-slicc-plugin).
 
+Author: **chengxin**.
+
 ## Installation and Usage
 
 1. Download the `.vsix` installation file from [GitHub Releases](https://github.com/ilo5u/gem5-slicc-plugin-for-vscode/releases).
-2. In the VS Code Extensions view, open the `…` menu and choose **Install from VSIX…**, then select the downloaded file. Alternatively, run `code --install-extension slicc-0.3.1.vsix` from the download directory.
-3. Open the full gem5 repository, then open a protocol file under `src/mem/ruby/protocol`. The language mode in the status bar should be **SLICC**.
+2. In the VS Code Extensions view, open the `…` menu and choose **Install from VSIX…**, then select the downloaded file. Alternatively, run `code --install-extension slicc-0.4.0.vsix` from the download directory.
+3. Open the full gem5 repository, then open a protocol file under `src/mem/ruby/protocol`. The language mode in the status bar should be **SLICC** for `.sm` or **SLICC Include List** for `.slicc`.
 
 The bundled `examples/Example.slicc` is a self-contained example for exploring editor features; it is not a runnable gem5 protocol. Press **F5** in this project to launch an Extension Development Host.
 
@@ -26,7 +28,7 @@ The bundled `examples/Example.slicc` is a self-contained example for exploring e
 | Context-aware completion | `Ctrl+Space`; after `.`, suggest only the receiver's members, with support for `interface` inheritance, message types, and reference/pointer parameters |
 | Protocol indexing | Follow `.slicc` / `include` relationships and `RubySlicc_interfaces.slicc`, distinguishing machine, type, and lexical scopes |
 | Definition navigation | `F12` / `Ctrl+Click`, with local-variable shadowing, function overloads, and declarations/definitions across files |
-| Bidirectional navigation | From action declarations to transitions; from function definitions or declaration-only functions to calling statements; from field/enum constant declarations to usage statements |
+| Bidirectional navigation | From action declarations to transitions; from function definitions or declaration-only functions to calling statements; from machine/structure member and enum constant declarations to concrete usage statements |
 | Related locations | Use **SLICC: Go to Related Transitions / Calls / Usages** from the Command Palette or context menu to view single-line previews of complete statements and jump to the identifier |
 | Find references | `Shift+F12`, matching symbol identity and overloads and combining references to function prototypes and definitions |
 | Signature help and hover | `Ctrl+Shift+Space` or type `(` / `,` to see overloads and the active parameter, preserving `&` / `*` modifiers |
@@ -46,6 +48,8 @@ The bundled `examples/Example.slicc` is a self-contained example for exploring e
 
 **Go to Declaration** always returns semantic declaration locations. On declaration names, **Go to Definition** provides the bidirectional navigation described above, following the original plugin's behavior.
 
+On a machine member declaration such as CHI's `directory`, **Go to Definition** finds usage statements in functions/actions within that machine and its transitive includes. Each statement appears once, with all results available. Parameters, local variables, other receiver types and other machines retain their own declarations; shared includes with ambiguous machine ownership defer member lookup. **Go to Declaration** and **Find References** retain semantic declaration identity.
+
 Implicit `in_msg` in `peek` and `out_msg` in `enqueue` take their types from the second argument of the nearest matching block. Nested blocks inherit surrounding bindings, and explicit parameters/local variables take priority. Shared files can belong to multiple machines; usage discovery searches all calling contexts.
 
 In actions, `cache_entry` uses the unique primary `AbstractCacheEntry` implementation visible in that machine/include scope. Omitted `main` defaults to true; `main="false"` excludes a structure. Navigation, completion, overload inference and inlay hints share this selection. Explicit locals and parameters still take priority, and an ambiguous or missing default never falls back to an unrelated `Entry`.
@@ -56,11 +60,13 @@ Non-string enum defaults resolve within the field's declared enum, including nam
 
 Transition state, event and action lists accept whitespace, comma or semicolon separators and optional trailing separators. The third argument may be `*`. A single brace block contains actions, even when empty or semicolon-free; with two blocks, the first contains resources. An unterminated action retains its syntax error while later declarations remain available for outline and navigation.
 
-The **SLICC Symbols** view in Explorer shows the current file with the original light/dark declaration badges. To enable distinct blue `SM` and purple `H` file icons, run **Preferences: File Icon Theme** and select **SLICC (gem5 Ruby)**. This optional theme uses generic icons for other files and folders. Native Outline and completion lists retain VS Code's standard symbol icons; the active file icon theme can override the default language icon.
+The default file icons distinguish blue `SM` for `.sm` from purple `H` for `.slicc`, with light/dark variants. The active file icon theme can override these defaults. To use the bundled icons explicitly, run **Preferences: File Icon Theme** and select **SLICC (gem5 Ruby)**; this optional theme uses generic icons for other files and folders. The **SLICC Symbols** view in Explorer uses the original light/dark declaration badges. Native Outline and completion lists retain VS Code's standard symbol icons.
 
 ## Configuration
 
 Search for `SLICC` in Settings. Common options:
+
+Both file types share the `slicc.*` settings below. Language-specific editor overrides use `[slicc]` for `.sm` and `[slicc-list]` for `.slicc`.
 
 ```json
 {
@@ -96,7 +102,7 @@ npm run test:corpus -- "<path-to-reference-repository>"
 npm run test:vscode
 ```
 
-`test:corpus` reads the Ruby source snapshot at HEAD in the specified repository and checks real protocol parsing, includes, navigation, inlay hints, external C++ type mappings, debug flags, and the actual primary entries in MI_example, CHI and MOESI_hammer. Append a Git ref, such as `v1.5.0` for the original plugin repository, to pin a release snapshot. It also checks malformed-action recovery, all nine port methods, enum defaults, CHI's `MN_TBEStorage` namespace, and duplicate detection in CHI's 226 transitions using an in-memory edit. Detailed results are written to `.test/corpus-report.json`. It supports `ruby/` in the original plugin repository or `src/mem/ruby/` in a gem5 repository, and does not modify the source repository. A Ruby-only snapshot provides partial debug-flag completion; non-Ruby declarations require the full project.
+`test:corpus` reads the Ruby source snapshot at HEAD in the specified repository and checks real protocol parsing, includes, navigation, inlay hints, external C++ type mappings, debug flags, and the actual primary entries in MI_example, CHI and MOESI_hammer. Append a Git ref, such as `v1.6.0` for the original plugin repository, to pin a release snapshot. It also checks malformed-action recovery, all nine port methods, enum defaults, CHI's `MN_TBEStorage` namespace, all eight CHI `directory` usage statements, and duplicate detection in CHI's 226 transitions using an in-memory edit. Detailed results are written to `.test/corpus-report.json`. It supports `ruby/` in the original plugin repository or `src/mem/ruby/` in a gem5 repository, and does not modify the source repository. A Ruby-only snapshot provides partial debug-flag completion; non-Ruby declarations require the full project.
 
 `test:vscode` uses a locally installed VS Code. It installs the newly generated VSIX into isolated user-data and extension directories under `.test/vscode/`, then verifies features in a real Extension Host. Set `VSCODE_EXECUTABLE` to override the executable path. Results are written to `.test/vscode-report.json`. Ordinary unit tests do not launch VS Code.
 

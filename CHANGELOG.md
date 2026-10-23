@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0 — 2026-10-23
+
+- Align with JetBrains plugin 1.6.0, tag `v1.6.0`, commit `a86cd4254c6ec0294fd65c11c5c1999076c604d2`.
+- Find machine member-variable usages within the owning machine and its transitive includes, including CHI's `directory`. Retain declaration identity, parameter/local shadowing, statement deduplication and all results without truncation.
+- Defer machine-field resolution in ambiguously shared include files and prevent nested machines' include closures from leaking into their outer callers. Preserve structure-field and enum navigation, semantic declaration targets and ordinary references.
+- Set the VS Code extension's author explicitly to `chengxin`, retain publisher `chengxin`, and preserve the existing logo, bilingual guides and acknowledgments.
+- Add regression coverage for ownership, shadowing, includes, native navigation and all eight real CHI `directory` usage statements. Retain the 0.3.2 default-icon fix.
+
+## 0.3.2 — 2026-10-22
+
+- Fix `.slicc` files displaying the `.sm` default icon. Register SLICC Include List separately with `slicc.svg` / `slicc_dark.svg`, while `.sm` retains `sm.svg` / `sm_dark.svg`.
+- Share the existing language providers, indexing, unsaved-edit handling, symbols view, commands and editor defaults across both file types.
+- Verify default icon registration, include-list completion/navigation and unsaved protocol edits in the installed-VSIX host tests.
+
 ## 0.3.1 — 2026-10-22
 
 - Add the VS Code extension's GitHub repository and issue tracker to the English and Chinese README files.

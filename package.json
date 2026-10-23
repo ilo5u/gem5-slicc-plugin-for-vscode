@@ -2,7 +2,8 @@
   "name": "slicc",
   "displayName": "SLICC / gem5 Ruby Language Support",
   "description": "Write gem5 Ruby cache coherence protocols like you write C++: SLICC completion, navigation, diagnostics and inlay hints.",
-  "version": "0.3.1",
+  "version": "0.4.0",
+  "author": "chengxin",
   "publisher": "chengxin",
   "icon": "icons/logo.png",
   "license": "Apache-2.0",
@@ -14,26 +15,32 @@
   "keywords": ["gem5", "ruby", "slicc", "cache coherence"],
   "main": "./src/extension.js",
   "extensionKind": ["workspace"],
-  "activationEvents": ["onLanguage:slicc"],
+  "activationEvents": ["onLanguage:slicc", "onLanguage:slicc-list"],
   "capabilities": { "untrustedWorkspaces": { "supported": true }, "virtualWorkspaces": { "supported": true } },
   "scripts": {
     "check": "node scripts/check.js",
-    "test": "node --test test/core.test.js test/update.test.js test/release150.test.js",
+    "test": "node --test test/core.test.js test/update.test.js test/release150.test.js test/release160.test.js",
     "test:corpus": "node scripts/verify-corpus.js",
     "test:vscode": "node scripts/run-vscode-tests.js",
     "package": "node scripts/package.js",
     "vscode:prepublish": "npm run check"
   },
   "contributes": {
-    "languages": [{ "id": "slicc", "aliases": ["SLICC", "slicc"], "extensions": [".sm", ".slicc"], "configuration": "./language-configuration.json", "icon": { "light": "./icons/sm.svg", "dark": "./icons/sm_dark.svg" } }],
+    "languages": [
+      { "id": "slicc", "aliases": ["SLICC", "slicc"], "extensions": [".sm"], "configuration": "./language-configuration.json", "icon": { "light": "./icons/sm.svg", "dark": "./icons/sm_dark.svg" } },
+      { "id": "slicc-list", "aliases": ["SLICC Include List", "slicc-list"], "extensions": [".slicc"], "configuration": "./language-configuration.json", "icon": { "light": "./icons/slicc.svg", "dark": "./icons/slicc_dark.svg" } }
+    ],
     "iconThemes": [{ "id": "slicc", "label": "SLICC (gem5 Ruby)", "path": "./icons/slicc-icon-theme.json" }],
-    "views": { "explorer": [{ "id": "slicc.symbols", "name": "SLICC Symbols", "when": "editorLangId == slicc" }] },
-    "grammars": [{ "language": "slicc", "scopeName": "source.slicc", "path": "./syntaxes/slicc.tmLanguage.json" }],
+    "views": { "explorer": [{ "id": "slicc.symbols", "name": "SLICC Symbols", "when": "editorLangId == slicc || editorLangId == slicc-list" }] },
+    "grammars": [
+      { "language": "slicc", "scopeName": "source.slicc", "path": "./syntaxes/slicc.tmLanguage.json" },
+      { "language": "slicc-list", "scopeName": "source.slicc.list", "path": "./syntaxes/slicc-list.tmLanguage.json" }
+    ],
     "commands": [
       { "command": "slicc.reindex", "title": "SLICC: Rebuild Workspace Index" },
       { "command": "slicc.findRelated", "title": "SLICC: Go to Related Transitions / Calls / Usages" }
     ],
-    "menus": { "editor/context": [{ "command": "slicc.findRelated", "when": "editorLangId == slicc", "group": "navigation@5" }] },
+    "menus": { "editor/context": [{ "command": "slicc.findRelated", "when": "editorLangId == slicc || editorLangId == slicc-list", "group": "navigation@5" }] },
     "configuration": {
       "title": "SLICC",
       "properties": {
@@ -51,7 +58,13 @@
         "slicc.index.includePaths": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Additional include directories, absolute or relative to each workspace folder." }
       }
     },
-    "configurationDefaults": { "[slicc]": { "editor.semanticHighlighting.enabled": true, "editor.inlayHints.enabled": "on" } },
-    "semanticTokenScopes": [{ "language": "slicc", "scopes": { "class": ["entity.name.type.slicc"], "struct": ["entity.name.type.slicc"], "enum": ["entity.name.type.enum.slicc"], "enumMember": ["constant.other.enum.slicc"], "function": ["entity.name.function.slicc"], "method": ["entity.name.function.slicc"], "property": ["variable.other.member.slicc"], "variable.defaultLibrary": ["variable.language.slicc"] } }]
+    "configurationDefaults": {
+      "[slicc]": { "editor.semanticHighlighting.enabled": true, "editor.inlayHints.enabled": "on" },
+      "[slicc-list]": { "editor.semanticHighlighting.enabled": true, "editor.inlayHints.enabled": "on" }
+    },
+    "semanticTokenScopes": [
+      { "language": "slicc", "scopes": { "class": ["entity.name.type.slicc"], "struct": ["entity.name.type.slicc"], "enum": ["entity.name.type.enum.slicc"], "enumMember": ["constant.other.enum.slicc"], "function": ["entity.name.function.slicc"], "method": ["entity.name.function.slicc"], "property": ["variable.other.member.slicc"], "variable.defaultLibrary": ["variable.language.slicc"] } },
+      { "language": "slicc-list", "scopes": { "class": ["entity.name.type.slicc"], "struct": ["entity.name.type.slicc"], "enum": ["entity.name.type.enum.slicc"], "enumMember": ["constant.other.enum.slicc"], "function": ["entity.name.function.slicc"], "method": ["entity.name.function.slicc"], "property": ["variable.other.member.slicc"], "variable.defaultLibrary": ["variable.language.slicc"] } }
+    ]
   }
 }

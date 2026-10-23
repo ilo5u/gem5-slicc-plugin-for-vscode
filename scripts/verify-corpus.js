@@ -101,8 +101,18 @@ async function main() {
   const duplicate = duplicateIndex.set(chiTransitions.uri, chiTransitions.text + '\n' + chiTransitions.text.slice(overlap.start, overlap.end));
   assert.equal(diagnostics(duplicateIndex, duplicate).filter(i => i.code === 'transition-duplicate' && i.start > chiTransitions.text.length).length, 1);
   const release150 = { recoveredActions, recoveredTransitions, writeBackTransitions: wdUsages.length, ports, enumDefaults, externalMN: mnType.locations[0].qualifiedName, chiTransitions: chiTransitions.transitions.length, injectedDuplicateDetected: true };
+  const chiCache = index.sources.get(base + prefix + 'protocol/chi/CHI-cache.sm'), cacheAnalysis = new Analysis(index, chiCache);
+  const directory = chiCache.symbols.find(s => s.name === 'directory' && s.kind === 'field' && s.scope.kind === 'machine');
+  assert(directory, 'CHI must declare its machine-owned directory');
+  const directoryUsages = cacheAnalysis.related(directory), directoryReferences = cacheAnalysis.references(directory);
+  assert.equal(directoryUsages.length, 8, 'CHI directory must expose all eight concrete usage statements');
+  for (const ref of directoryReferences) {
+    assert.equal(new Analysis(index, ref.source).resolve(ref.token.index)[0]?.id, directory.id);
+    assert.deepEqual(index.machineContexts(ref.source, ref.token.start).map(context => context.symbol.id), [directory.scope.owner.id]);
+  }
+  const release160 = { machine: directory.scope.owner.name, field: directory.name, references: directoryReferences.length, usageStatements: directoryUsages.length, files: [...new Set(directoryUsages.map(ref => ref.source.uri.slice(base.length)))] };
   const symbols = [...index.sources.values()].reduce((n, s) => n + s.symbols.length, 0);
-  const report = { reference: repo, ref, commit: hash.stdout.trim(), files: index.sources.size, symbols, hints: allHints.length, debugFlags: { names: debugFlags.flags.length, complete: debugFlags.complete }, primaryCacheEntries: { MI_example: 'Entry', CHI: 'CacheEntry', MOESI_hammer_directory: 'PfEntry' }, release150, parseMs: Math.round(parseMs), totalMs: Math.round(performance.now() - started), diagnostics: counts, samples: Object.fromEntries(Object.entries(samples).map(([k, v]) => [k, v.slice(0, 50)])), perFile: perFile.sort((a, b) => b.issues - a.issues) };
+  const report = { reference: repo, ref, commit: hash.stdout.trim(), files: index.sources.size, symbols, hints: allHints.length, debugFlags: { names: debugFlags.flags.length, complete: debugFlags.complete }, primaryCacheEntries: { MI_example: 'Entry', CHI: 'CacheEntry', MOESI_hammer_directory: 'PfEntry' }, release150, release160, parseMs: Math.round(parseMs), totalMs: Math.round(performance.now() - started), diagnostics: counts, samples: Object.fromEntries(Object.entries(samples).map(([k, v]) => [k, v.slice(0, 50)])), perFile: perFile.sort((a, b) => b.issues - a.issues) };
   const reportPath = path.resolve(__dirname, '../.test/corpus-report.json'); fs.mkdirSync(path.dirname(reportPath), { recursive: true }); fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify({ ...report, samples: undefined, perFile: undefined }, null, 2));
   console.log(`Detailed report: ${reportPath}`);

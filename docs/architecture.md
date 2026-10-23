@@ -16,10 +16,13 @@ transition roles and matched delimiters. It tolerates unfinished editor buffers.
 
 The workspace index maintains protocol and machine include closures and the nearest
 `RubySlicc_interfaces.slicc` global scope. A file can belong to several machine
-closures. Forward lookup uses the first matching machine context, while references
-walk all callers so shared actions can link back to every including machine.
-Only includes issued inside a machine propagate that machine's ownership; global
-and outside-machine includes retain their own scopes. Machine members, free
+closures. Machine fields require a unique owning machine, while shared action and
+function references can link back to every calling machine. Machine-field
+references scan only the owning machine's include closure and compare resolved
+declaration identity before deduplicating statements; all actual targets remain
+available. Only includes issued inside a machine start that machine's closure;
+transitive traversal excludes includes owned by nested machines. Global and
+outside-machine includes retain their own scopes. Machine members, free
 functions and type members have separate namespaces.
 
 An analysis session shares resolution, expression, call and inherited-member
@@ -100,8 +103,13 @@ Hover uses the selected declaration's own `desc`, safely escaping markup and
 preserving newlines. Fallback is restricted to matching function prototypes and
 definitions; conflicting descriptions and ambiguous usages defer that content.
 
-The optional SLICC file icon theme differentiates `.sm` and `.slicc`; the default
-language icon remains subject to the user's active theme. `symbols-view.js`
+`.sm` uses the `slicc` language ID and `.slicc` uses `slicc-list`, each with
+distinct default light/dark file icons. `languages.js` supplies a shared provider
+selector and document predicate so both retain the same language services,
+buffer tracking and diagnostics. The include-list TextMate grammar delegates to
+`source.slicc`. Both language IDs have editor defaults and semantic token scopes.
+The optional SLICC file icon theme also differentiates the two extensions; the
+default language icons remain subject to the user's active theme. `symbols-view.js`
 provides the SLICC Symbols tree with the original declaration SVG badges and
 dedicated light/dark paths. VS Code's native Outline retains its SymbolKind
 icons because its document-symbol provider does not accept custom SVG icons.
@@ -155,11 +163,14 @@ both graphs.
 
 ## Validation
 
-`test/core.test.js`, `test/update.test.js` and `test/release150.test.js` cover scope isolation, shadowing, messages, modifiers,
+`test/core.test.js`, `test/update.test.js`, `test/release150.test.js` and
+`test/release160.test.js` cover scope isolation, shadowing, messages, modifiers,
 overloads, interface inheritance, conservative diagnostics, hints, references,
 reverse navigation, logical ports, enum defaults/helpers, recovery, protocol
-ownership and independent caches. The corpus script reads a local Git snapshot
-snapshot and exercises real MI/MESI/MOESI/CHI protocols. The VS Code host runner
+ownership and independent caches, including ambiguous and nested machine-member
+ownership and all 45 statements in a larger navigation fixture. The corpus script
+reads a local Git snapshot and exercises real MI/MESI/MOESI/CHI protocols, including
+all eight CHI `directory` usage statements. The VS Code host runner
 first packages and installs the actual VSIX into an isolated test extension
 directory, then executes native provider commands against that installed copy.
 Neither test workflow modifies the CLion source repository or the user's installed

@@ -2,6 +2,7 @@
 
 const vscode = require('vscode');
 const { signature } = require('./core/analysis');
+const { isSliccDocument } = require('./languages');
 
 function symbolIcon(context, kind) {
   const name = { action: 'action', function: 'function', machine: 'machine', structure: 'structure', external_type: 'structure', enumeration: 'enum', state_declaration: 'enum', enumMember: 'enum', transition: 'transition' }[kind];
@@ -16,7 +17,7 @@ class SymbolsView {
   async getChildren(symbol) {
     if (symbol) return symbol.children.filter(child => !['parameter', 'variable'].includes(child.kind));
     const editor = vscode.window.activeTextEditor;
-    if (editor?.document.languageId !== 'slicc') return [];
+    if (!isSliccDocument(editor?.document)) return [];
     const source = await this.workspace.source(editor.document); return source.root.symbols;
   }
   getTreeItem(symbol) {

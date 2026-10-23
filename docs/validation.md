@@ -1,5 +1,29 @@
 # 验证记录
 
+## 0.4.0 — 对齐 JetBrains 1.6.0
+
+验证日期：2026-10-23。参考仓库 `C:/Users/chengxin/slicc-plugin` 的 `v1.6.0`
+固定到提交 `a86cd4254c6ec0294fd65c11c5c1999076c604d2`；仅作读取。
+
+- `npm run check`：29 个 JavaScript 文件及全部 JSON 配置通过。
+- `npm test`：116 项核心测试通过。新增 12 项覆盖 machine 成员读写和初始化、语句去重、参数/局部变量遮蔽、结构成员身份、传递/循环 include、同文件多个 machine、共享 include 歧义、嵌套 machine 隔离、include 编辑后的缓存刷新，以及 45 条语句全部返回。
+- `npm run test:corpus -- C:/Users/chengxin/slicc-plugin v1.6.0`：75 份真实源码、11,824 个声明、7,263 条内联提示；CHI 的 `directory` 对应 `CHI-cache-actions.sm` / `CHI-cache-funcs.sm` 中全部 8 条引用和 8 条使用语句，逐一验证声明身份与唯一 machine 归属。既有端口、枚举、外部 C++ 类型、transition 和错误块恢复检查继续通过。
+- VS Code 1.142.0 中安装实际 0.4.0 VSIX，47 项宿主检查通过。新增 4 项验证 machine 成员声明到实际语句的反向跳转、声明导航/引用与遮蔽、嵌套 machine include 隔离，以及全部 45 个导航结果。0.3.2 的两种默认文件图标与 `.slicc` 编辑服务检查继续通过。
+- 本机 VS Code 更新程序持有启动锁；测试仅为 `.test/` 内的独立运行副本临时设置专用进程锁名，并在结束后恢复原配置，未修改用户安装或终止更新程序。
+- 仅作者相关元数据统一为 `chengxin`：`package.json` 的 `author` / `publisher`、中英文 README 和 NOTICE。未迁移 JetBrains 的 vendor、联系人或作者列表调整，保留源码来源链接及已有致谢。
+- 真实语料仍有 184 条普通未解析标识符、原有 1 条语法错误和 2 条格式参数数量警告；这些记录不代表完整编译器校验。
+
+当前结果见 `.test/corpus-report.json` 和 `.test/vscode-report.json`；下方保留历史验证记录。
+
+## 0.3.2 — 区分默认文件图标
+
+- `.sm` 保留 `slicc` 语言注册与 `sm.svg` / `sm_dark.svg`；`.slicc` 使用 `slicc-list` 注册与 `slicc.svg` / `slicc_dark.svg`。当前图标主题仍可覆盖默认值。
+- 两种语言共用编辑服务与索引。`.slicc` 的语法复用原有 TextMate 规则，编辑器默认配置、语义高亮、大纲视图和菜单均覆盖新语言 ID。
+- `npm run check`：28 个 JavaScript 文件及全部 JSON 配置通过；`npm test`：104 项核心测试通过。
+- VS Code 1.142.0 中安装实际 0.3.2 VSIX，43 项宿主检查通过。新增检查覆盖两种默认明暗图标注册、`.slicc` 自动语言识别、include 跳转与补全、编辑器默认值和文档跟踪；原有未保存协议编辑后 C++ 命名空间切换检查继续通过。
+
+本次宿主报告为 `.test/vscode-report.json`，下方保留历史版本的验证记录。
+
 ## 0.3.0 — 对齐 JetBrains 1.5.0
 
 验证日期：2026-10-22。参考仓库 `C:/Users/chengxin/slicc-plugin` 的 `v1.5.0`

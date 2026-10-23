@@ -12,6 +12,29 @@ fs.mkdirSync(testDir, { recursive: true });
 fs.mkdirSync(path.join(userData, 'User'), { recursive: true });
 fs.writeFileSync(path.join(userData, 'User/settings.json'), JSON.stringify({ 'telemetry.telemetryLevel': 'off', 'update.mode': 'none', 'extensions.autoUpdate': false, 'extensions.autoCheckUpdates': false, 'workbench.enableExperiments': false, 'workbench.startupEditor': 'none', 'chat.disableAIFeatures': true, 'workbench.tips.enabled': false, 'slicc.index.includePaths': [path.join(testDir, 'includes')] }, null, 2));
 for (const [name, text] of Object.entries({
+  'navigation160/Owner.sm': `structure(Holder) { int directory; }
+machine(MachineType:Owner) {
+  int directory;
+  Holder holder;
+  void consume(int first, int second);
+  include "Actions.sm";
+  include "Shared.sm";
+  void parameter(int directory) { consume(directory, directory); }
+  action(local, "l") {
+    consume(directory, directory);
+    { int directory; consume(directory, directory); }
+    holder.directory := 1;
+  }
+}
+`,
+  'navigation160/Actions.sm': 'include "Functions.sm";\naction(included, "i") { consume(directory, directory); }\n',
+  'navigation160/Functions.sm': 'void includedRead() { consume(directory, directory); }\n',
+  'navigation160/Other.sm': 'machine(MachineType:Other) { int directory; include "Shared.sm"; action(other, "o") { directory := 2; } }\n',
+  'navigation160/Shared.sm': 'void ambiguousRead() { directory := 1; }\n',
+  'navigation160/Container.sm': 'machine(MachineType:Container) { int directory; include "Fragment.sm"; }\n',
+  'navigation160/Fragment.sm': 'action(container, "c") { directory := 1; } machine(MachineType:Child) { int directory; include "ChildActions.sm"; }\n',
+  'navigation160/ChildActions.sm': 'void childRead() { directory := 2; }\n',
+  'navigation160/Many.sm': 'machine(MachineType:Many) { int directory; void consume(int first, int second); action(many, "m") {\n' + Array.from({ length: 45 }, () => 'consume(directory, directory);').join('\n') + '\n} }\n',
   'ruby/SConstruct': '',
   'ruby/Kconfig': 'rsource "protocol/Kconfig"', 'ruby/protocol/Kconfig': '',
   'ruby/SConscript': 'MakeInclude("network/MessageBuffer.hh")\nDebugFlag("Ruby")\nCompoundFlag("RubyAll", ["Ruby"])\n',

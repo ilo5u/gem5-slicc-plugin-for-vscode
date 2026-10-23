@@ -33,10 +33,16 @@ class WorkspaceIndex {
     return out;
   }
   machineClosure(source, owner) {
-    const files = new Set([source]);
+    const files = new Set([source]), pending = [];
     for (const include of source.includes) if (ownerOf(include.scope, machineKinds) === owner) {
-      const target = this.includeTarget(source, include);
-      if (target) for (const file of this.closure(target)) files.add(file);
+      pending.push(this.includeTarget(source, include));
+    }
+    while (pending.length) {
+      const file = pending.shift();
+      if (!file || files.has(file)) continue;
+      files.add(file);
+      // An included file can declare another machine; that machine owns its includes.
+      for (const include of file.includes) if (!ownerOf(include.scope, machineKinds)) pending.push(this.includeTarget(file, include));
     }
     return files;
   }
@@ -57,7 +63,7 @@ class WorkspaceIndex {
   }
   visibility(source, at) {
     const g = this.graph(), explicit = ownerOf(source.scopeAt(at), machineKinds);
-    const machine = this.machineContexts(source, at)[0];
+    const contexts = this.machineContexts(source, at), machine = contexts[0];
     const group = g.groups.find(x => x.files.has(source));
     const key = `${source.uri}#${explicit?.id ?? machine?.symbol.id ?? ''}`;
     if (this.visibilityCache.has(key)) return this.visibilityCache.get(key);
@@ -72,6 +78,7 @@ class WorkspaceIndex {
         if (!['file', 'machine'].includes(sym.scope.kind)) continue;
         const owner = ownerOf(sym.scope, machineKinds);
         if (owner && (!allowMachine || owner !== (explicit ?? machine?.symbol))) continue;
+        if (owner && sym.kind === 'field' && contexts.length !== 1) continue;
         out.push(sym);
       }
       return out;

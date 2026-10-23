@@ -284,7 +284,10 @@ class Analysis {
   }
   references(symbol, includeDeclaration = false) {
     const out = [];
-    for (const source of this.index.sources.values()) {
+    const files = symbol.kind === 'field' && symbol.scope.kind === 'machine'
+      ? this.index.graph().machines.find(machine => machine.symbol.id === symbol.scope.owner.id)?.files ?? []
+      : this.index.sources.values();
+    for (const source of files) {
       if (this.cancelled()) break;
       const analysis = source === this.source ? this : new Analysis(this.index, source, this.cancelled);
       for (const token of source.tokens) {
